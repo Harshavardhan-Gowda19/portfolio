@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Harshavardhan Gowda — Research Portfolio</title>
+<style>
+  /* ─── TOKENS ──────────────────────────────────────────── */
+  :root {
+    --black:   #0a0a0a;
+    --white:   #f5f5f7;
+    --grey1:   #1c1c1e;
+    --grey2:   #2c2c2e;
+    --grey3:   #6e6e73;
+    --grey4:   #aeaeb2;
+    --accent:  #a8d5e2;   /* cold slate-blue — science / precision */
+    --accent2: #7ab8c8;
+    --accent3: #4a9bb5;
+    --gold:    #d4af7a;   /* warm contrast */
+    --danger:  #ff6b6b;
+    --radius:  16px;
+    --font-display: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-body:    'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono:    'SF Mono', 'Fira Code', 'Consolas', monospace;
+  }
+
+  /* ─── RESET ───────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background: var(--black);
+    color: var(--white);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+  /* ─── SCROLLBAR ───────────────────────────────────────── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--grey2); border-radius: 4px; }
+
+  /* ─── NAV ─────────────────────────────────────────────── */
+  #nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px;
+    height: 52px;
+    background: rgba(10,10,10,0.72);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    transition: background 0.3s;
+  }
+  .nav-name {
+    font-size: 16px; font-weight: 600; letter-spacing: -0.3px;
+    color: var(--white);
+  }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    font-size: 13px; color: var(--grey4);
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-admin-btn { display: none; } /* hidden from public — use secret shortcut */
+
+  /* ─── SECTIONS (base) ─────────────────────────────────── */
+  section { position: relative; }
+
+  /* ─── HERO ────────────────────────────────────────────── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 100px 24px 60px;
+    background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(74,155,181,0.12) 0%, transparent 70%);
+    overflow: hidden;
+  }
+  .hero-eyebrow {
+    font-size: 13px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 24px;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.8s 0.1s, transform 0.8s 0.1s;
+  }
+  .hero-name {
+    font-family: var(--font-display);
+    font-size: clamp(52px, 8vw, 96px);
+    font-weight: 700; letter-spacing: -3px; line-height: 0.95;
+    color: var(--white);
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.9s 0.2s, transform 0.9s 0.2s;
+  }
+  .hero-name span { color: var(--accent); }
+  .hero-tagline {
+    margin-top: 28px;
+    font-size: clamp(16px, 2vw, 22px);
+    color: var(--grey3); line-height: 1.55; max-width: 640px;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.9s 0.4s, transform 0.9s 0.4s;
+  }
+  .hero-cta-group {
+    margin-top: 44px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.9s 0.55s, transform 0.9s 0.55s;
+  }
+  .btn-primary {
+    padding: 14px 32px; border-radius: 30px;
+    background: var(--accent3); color: var(--black);
+    font-size: 15px; font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover { transform: scale(1.03); box-shadow: 0 8px 32px rgba(74,155,181,0.4); }
+  .btn-ghost {
+    padding: 14px 32px; border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.2); color: var(--white);
+    font-size: 15px; font-weight: 500;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.07); transform: scale(1.02); }
+  .hero-scroll {
+    position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--grey3); font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+    animation: bounce 2s ease-in-out infinite;
+  }
+  .hero-scroll svg { opacity: 0.5; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+  /* ─── STATS STRIP ─────────────────────────────────────── */
+  #stats {
+    padding: 64px 48px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 32px;
+  }
+  .stat-item { text-align: center; }
+  .stat-num {
+    font-family: var(--font-display); font-size: 44px; font-weight: 700;
+    letter-spacing: -2px; color: var(--white);
+    background: linear-gradient(135deg, var(--white) 0%, var(--accent) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .stat-label { font-size: 13px; color: var(--grey3); margin-top: 6px; }
+
+  /* ─── SECTION SHELL ───────────────────────────────────── */
+  .section-shell {
+    padding: 120px 0;
+    max-width: 1200px; margin: 0 auto; padding-left: 48px; padding-right: 48px;
+  }
+  .section-eyebrow {
+    font-size: 12px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4vw, 52px); font-weight: 700; letter-spacing: -1.5px;
+    line-height: 1.1; color: var(--white); max-width: 680px; margin-bottom: 64px;
+  }
+
+  /* ─── RESEARCH CARDS ──────────────────────────────────── */
+  #research { background: var(--black); }
+  .research-grid {
+    display: grid; gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(520px, 1fr));
+  }
+  .research-card {
+    background: var(--grey1);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--radius);
+    padding: 36px;
+    position: relative; overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    cursor: default;
+  }
+  .research-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .research-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); border-color: rgba(168,213,226,0.2); }
+  .research-card:hover::before { opacity: 1; }
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+  .card-institution {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px;
+  }
+  .card-role {
+    font-size: 20px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2;
+    color: var(--white); margin-bottom: 6px;
+  }
+  .card-period { font-size: 13px; color: var(--grey3); margin-bottom: 24px; }
+  .card-body { font-size: 14px; line-height: 1.7; color: var(--grey4); }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+  .tag {
+    font-size: 11px; font-weight: 500;
+    padding: 5px 12px; border-radius: 20px;
+    background: rgba(168,213,226,0.08);
+    border: 1px solid rgba(168,213,226,0.2);
+    color: var(--accent);
+  }
+  .card-badge {
+    flex-shrink: 0;
+    font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+    padding: 5px 10px; border-radius: 8px;
+    background: rgba(212,175,122,0.12); border: 1px solid rgba(212,175,122,0.3);
+    color: var(--gold);
+  }
+  .card-highlights { margin-top: 18px; }
+  .card-highlights li {
+    font-size: 13px; color: var(--grey4); line-height: 1.6;
+    padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+    padding-left: 16px; position: relative; list-style: none;
+  }
+  .card-highlights li::before {
+    content: '–'; position: absolute; left: 0; color: var(--accent);
+  }
+  .card-highlights li:last-child { border-bottom: none; }
+
+  /* ─── PUBLICATIONS ────────────────────────────────────── */
+  #publications { background: var(--grey1); }
+  .pub-list { display: flex; flex-direction: column; gap: 20px; }
+  .pub-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: start;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .pub-item:hover { border-color: rgba(168,213,226,0.2); background: rgba(168,213,226,0.04); }
+  .pub-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; color: var(--white); margin-bottom: 8px; line-height: 1.4; }
+  .pub-authors { font-size: 13px; color: var(--grey3); margin-bottom: 6px; }
+  .pub-venue { font-size: 13px; color: var(--accent); font-style: italic; }
+  .pub-status {
+    flex-shrink: 0; align-self: flex-start;
+    font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 20px;
+    background: rgba(212,175,122,0.1); border: 1px solid rgba(212,175,122,0.3);
+    color: var(--gold);
+  }
+  .pub-status.prep {
+    background: rgba(168,213,226,0.08); border-color: rgba(168,213,226,0.2);
+    color: var(--accent);
+  }
+
+  /* ─── SKILLS ──────────────────────────────────────────── */
+  #skills { background: var(--black); }
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+  .skill-group {
+    background: var(--grey1);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--radius);
+    padding: 28px;
+    transition: border-color 0.3s;
+  }
+  .skill-group:hover { border-color: rgba(168,213,226,0.2); }
+  .skill-group-title {
+    font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 16px;
+  }
+  .skill-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .skill-pill {
+    font-size: 13px; font-weight: 500;
+    padding: 7px 14px; border-radius: 20px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--grey4);
+    transition: all 0.2s;
+  }
+  .skill-pill:hover { background: rgba(168,213,226,0.08); border-color: rgba(168,213,226,0.2); color: var(--white); }
+
+  /* ─── CONTACT ─────────────────────────────────────────── */
+  #contact {
+    text-align: center;
+    padding: 160px 48px;
+    background: var(--grey1);
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .contact-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 64px); font-weight: 700; letter-spacing: -2px;
+    line-height: 1.1; margin-bottom: 20px;
+  }
+  .contact-sub { font-size: 18px; color: var(--grey3); max-width: 480px; margin: 0 auto 48px; line-height: 1.6; }
+  .contact-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+  .contact-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 28px; border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.15);
+    font-size: 15px; font-weight: 500; color: var(--white);
+    transition: all 0.25s;
+  }
+  .contact-link:hover { border-color: var(--accent); background: rgba(168,213,226,0.08); transform: translateY(-2px); }
+  .contact-link .icon { font-size: 18px; }
+
+  /* ─── FOOTER ──────────────────────────────────────────── */
+  footer {
+    padding: 32px 48px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px; color: var(--grey3);
+  }
+
+  /* ─── SCROLL REVEAL ───────────────────────────────────── */
+  .reveal {
+    opacity: 0; transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-d1 { transition-delay: 0.1s; }
+  .reveal-d2 { transition-delay: 0.2s; }
+  .reveal-d3 { transition-delay: 0.3s; }
+  .reveal-d4 { transition-delay: 0.4s; }
+
+  /* ─── ADMIN PANEL ─────────────────────────────────────── */
+  #admin-overlay {
+    display: none; position: fixed; inset: 0; z-index: 9000;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(6px);
+  }
+  #admin-overlay.open { display: flex; align-items: flex-start; justify-content: flex-end; }
+  #admin-panel {
+    width: min(540px, 100vw);
+    height: 100vh;
+    background: #111;
+    border-left: 1px solid rgba(255,255,255,0.1);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  }
+  #admin-overlay.open #admin-panel { transform: translateX(0); }
+  .admin-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .admin-header-title { font-size: 16px; font-weight: 600; }
+  .admin-header-sub { font-size: 12px; color: var(--grey3); margin-top: 2px; }
+  .admin-close {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.08); color: var(--white);
+    font-size: 18px; display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .admin-close:hover { background: rgba(255,255,255,0.14); }
+  .admin-tabs {
+    display: flex; border-bottom: 1px solid rgba(255,255,255,0.07);
+    flex-shrink: 0;
+  }
+  .admin-tab {
+    flex: 1; padding: 13px 10px; text-align: center;
+    font-size: 12px; font-weight: 500; color: var(--grey3);
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .admin-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .admin-body { flex: 1; overflow-y: auto; padding: 24px; }
+  .admin-section { display: none; }
+  .admin-section.active { display: block; }
+  .admin-field { margin-bottom: 20px; }
+  .admin-label { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--grey3); margin-bottom: 8px; display: block; }
+  .admin-input, .admin-textarea, .admin-select {
+    width: 100%; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px; color: var(--white);
+    font-size: 14px; font-family: inherit;
+    padding: 10px 14px;
+    transition: border-color 0.2s;
+  }
+  .admin-input:focus, .admin-textarea:focus, .admin-select:focus { outline: none; border-color: var(--accent); }
+  .admin-textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+  .admin-select option { background: #1c1c1e; }
+  .admin-save-btn {
+    width: 100%; padding: 13px;
+    background: var(--accent3); color: var(--black);
+    border-radius: 10px; font-size: 15px; font-weight: 600;
+    margin-top: 8px;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .admin-save-btn:hover { background: var(--accent2); transform: translateY(-1px); }
+  .admin-divider {
+    font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--grey3); margin: 24px 0 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .admin-divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
+  .card-editor { background: rgba(255,255,255,0.03); border-radius: 10px; padding: 16px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.07); }
+  .card-editor-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .card-editor-title { font-size: 13px; font-weight: 600; color: var(--white); }
+  .card-editor-toggle { font-size: 11px; color: var(--accent); cursor: pointer; }
+  .card-editor-body { display: none; }
+  .card-editor-body.open { display: block; }
+  .add-item-btn {
+    width: 100%; padding: 11px;
+    background: rgba(168,213,226,0.08);
+    border: 1px dashed rgba(168,213,226,0.3);
+    border-radius: 10px; color: var(--accent); font-size: 14px; font-weight: 500;
+    margin-top: 4px;
+    transition: background 0.2s;
+  }
+  .add-item-btn:hover { background: rgba(168,213,226,0.14); }
+  .delete-btn {
+    padding: 6px 12px; border-radius: 6px;
+    background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.2);
+    color: var(--danger); font-size: 12px; font-weight: 500;
+    transition: background 0.2s;
+  }
+  .delete-btn:hover { background: rgba(255,107,107,0.2); }
+  .toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: #1c1c1e; border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 30px; padding: 12px 24px;
+    font-size: 14px; font-weight: 500; color: var(--white);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    z-index: 9999;
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s;
+    opacity: 0;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .hlabel { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .hlabel span { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--grey3); }
+  .bullet-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .bullet-row .admin-input { flex: 1; }
+  .bullet-remove { flex-shrink: 0; width: 32px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2); color: var(--danger); font-size: 16px; transition: background 0.2s; }
+  .bullet-remove:hover { background: rgba(255,107,107,0.18); }
+
+  /* ─── RESPONSIVE ──────────────────────────────────────── */
+  @media (max-width: 768px) {
+    #nav { padding: 0 24px; }
+    .nav-links { display: none; }
+    .section-shell { padding: 80px 24px; }
+    .research-grid { grid-template-columns: 1fr; }
+    .pub-item { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+    #contact { padding: 100px 24px; }
+    #stats { padding: 48px 24px; }
+  }
+
+  /* ─── PASSWORD GATE ────────────────────────────────────── */
+  #pw-gate {
+    display: none; position: fixed; inset: 0; z-index: 9500;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+    align-items: center; justify-content: center;
+  }
+  #pw-gate.open { display: flex; }
+  .pw-box {
+    background: #141414; border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px; padding: 40px 36px; width: 340px; text-align: center;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    animation: pwIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes pwIn { from { opacity:0; transform: scale(0.88) translateY(20px); } to { opacity:1; transform: none; } }
+  .pw-icon { font-size: 36px; margin-bottom: 16px; }
+  .pw-title { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+  .pw-sub { font-size: 13px; color: var(--grey3); margin-bottom: 24px; }
+  .pw-input {
+    width: 100%; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.14); border-radius: 10px;
+    color: var(--white); font-size: 16px; font-family: inherit;
+    padding: 12px 16px; text-align: center; letter-spacing: 3px;
+    margin-bottom: 14px;
+  }
+  .pw-input:focus { outline: none; border-color: var(--accent); }
+  .pw-btn {
+    width: 100%; padding: 12px;
+    background: var(--accent3); color: var(--black);
+    border-radius: 10px; font-size: 15px; font-weight: 600;
+    transition: background 0.2s;
+  }
+  .pw-btn:hover { background: var(--accent2); }
+  .pw-error { font-size: 13px; color: var(--danger); margin-top: 10px; min-height: 18px; }
+  .pw-cancel { font-size: 13px; color: var(--grey3); margin-top: 12px; cursor: pointer; }
+  .pw-cancel:hover { color: var(--white); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ─────────────────────────────────────────────── -->
+<nav id="nav">
+  <div class="nav-name" id="nav-name">Harshavardhan Gowda</div>
+  <div class="nav-links">
+    <a href="#research">Research</a>
+    <a href="#publications">Publications</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <!-- admin entry: secret sequence only -->
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-eyebrow" id="hero-eyebrow">Research Portfolio · Seeking PhD & Research Positions</div>
+  <h1 class="hero-name" id="hero-name">Harsha<span>vardhan</span><br/>Gowda</h1>
+  <p class="hero-tagline" id="hero-tagline">Deep learning researcher at the intersection of computational biology, remote sensing, and medical imaging — building models that see what humans cannot.</p>
+  <div class="hero-cta-group">
+    <a class="btn-primary" href="#research">View Research</a>
+    <a class="btn-ghost" href="mailto:harshavardhangowda19@gmail.com">Get in Touch</a>
+  </div>
+  <div class="hero-scroll">
+    <svg width="14" height="20" viewBox="0 0 14 20" fill="none"><rect x="1" y="1" width="12" height="18" rx="6" stroke="currentColor" stroke-width="1.5"/><circle cx="7" cy="7" r="2" fill="currentColor" class="scroll-dot"/></svg>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ── STATS ─────────────────────────────────────────────── -->
+<div id="stats">
+  <div class="stat-item reveal"><div class="stat-num" id="stat-papers">3</div><div class="stat-label" id="stat-papers-label">Papers & Manuscripts</div></div>
+  <div class="stat-item reveal reveal-d1"><div class="stat-num" id="stat-internships">4</div><div class="stat-label" id="stat-internships-label">Research Internships</div></div>
+  <div class="stat-item reveal reveal-d2"><div class="stat-num" id="stat-institutions">3</div><div class="stat-label" id="stat-institutions-label">Elite Institutions</div></div>
+  <div class="stat-item reveal reveal-d3"><div class="stat-num" id="stat-domains">3</div><div class="stat-label" id="stat-domains-label">Research Domains</div></div>
+</div>
+
+<!-- ── RESEARCH ───────────────────────────────────────────── -->
+<section id="research">
+  <div class="section-shell">
+    <div class="section-eyebrow reveal">Research Experience</div>
+    <h2 class="section-title reveal reveal-d1">Curiosity-driven work<br/>across three continents.</h2>
+    <div class="research-grid" id="research-grid">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ── PUBLICATIONS ────────────────────────────────────────── -->
+<section id="publications">
+  <div class="section-shell">
+    <div class="section-eyebrow reveal">Publications</div>
+    <h2 class="section-title reveal reveal-d1">Work submitted, reviewed,<br/>and in progress.</h2>
+    <div class="pub-list" id="pub-list">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ────────────────────────────────────────────── -->
+<section id="skills">
+  <div class="section-shell">
+    <div class="section-eyebrow reveal">Technical Skills</div>
+    <h2 class="section-title reveal reveal-d1">Built for depth,<br/>not breadth.</h2>
+    <div class="skills-grid" id="skills-grid">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ────────────────────────────────────────────── -->
+<section id="contact">
+  <div class="section-eyebrow reveal" style="margin-bottom:16px">Let's connect</div>
+  <h2 class="contact-title reveal reveal-d1" id="contact-title">Open to PhD &amp;<br/>Research Opportunities.</h2>
+  <p class="contact-sub reveal reveal-d2" id="contact-sub">Third-year undergrad at NIT Karnataka actively seeking PhD positions and research internships for 2026–27. Let's build something meaningful together.</p>
+  <div class="contact-links reveal reveal-d3" id="contact-links-container">
+    <!-- populated by JS -->
+  </div>
+</section>
+
+<footer>
+  <span id="footer-left">© 2025 Harshavardhan Gowda</span>
+  <span id="footer-right">NITK Surathkal · B.Tech Metallurgical &amp; Materials Engineering</span>
+</footer>
+
+<!-- ── PASSWORD GATE (invisible to public) ─────────────── -->
+<div id="pw-gate">
+  <div class="pw-box">
+    <div class="pw-icon">🔒</div>
+    <div class="pw-title">Portfolio Editor</div>
+    <div class="pw-sub">Enter your admin password to continue</div>
+    <input class="pw-input" id="pw-input" type="password" placeholder="••••••••"
+      onkeydown="if(event.key==='Enter')checkPassword()" autocomplete="off" />
+    <button class="pw-btn" onclick="checkPassword()">Unlock</button>
+    <div class="pw-error" id="pw-error"></div>
+    <div class="pw-cancel" onclick="closePwGate()">Cancel</div>
+  </div>
+</div>
+
+
+<div id="admin-overlay" onclick="overlayClickClose(event)">
+  <div id="admin-panel">
+    <div class="admin-header">
+      <div>
+        <div class="admin-header-title">✏️ Portfolio Editor</div>
+        <div class="admin-header-sub">Changes save instantly to your browser</div>
+      </div>
+      <button class="admin-close" onclick="closeAdmin()">×</button>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchTab('basics')">Basics</button>
+      <button class="admin-tab" onclick="switchTab('research')">Research</button>
+      <button class="admin-tab" onclick="switchTab('pubs')">Papers</button>
+      <button class="admin-tab" onclick="switchTab('skills')">Skills</button>
+      <button class="admin-tab" onclick="switchTab('stats')">Stats</button>
+    </div>
+    <div class="admin-body">
+
+      <!-- BASICS TAB -->
+      <div class="admin-section active" id="tab-basics">
+        <div class="admin-divider">Hero Section</div>
+        <div class="admin-field">
+          <label class="admin-label">Your Name (displayed in hero)</label>
+          <input class="admin-input" id="edit-name" type="text" />
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">Eyebrow text (above name)</label>
+          <input class="admin-input" id="edit-eyebrow" type="text" />
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">Tagline (bio below name)</label>
+          <textarea class="admin-textarea" id="edit-tagline" rows="3"></textarea>
+        </div>
+        <div class="admin-divider">Contact Section</div>
+        <div class="admin-field">
+          <label class="admin-label">Contact heading</label>
+          <input class="admin-input" id="edit-contact-title" type="text" />
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">Contact sub-text</label>
+          <textarea class="admin-textarea" id="edit-contact-sub" rows="3"></textarea>
+        </div>
+        <div class="admin-divider">Contact Links</div>
+        <div id="contact-links-editor"></div>
+        <button class="add-item-btn" onclick="addContactLink()">+ Add link</button>
+        <div class="admin-divider">Footer</div>
+        <div class="admin-field">
+          <label class="admin-label">Footer left text</label>
+          <input class="admin-input" id="edit-footer-left" type="text" />
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">Footer right text</label>
+          <input class="admin-input" id="edit-footer-right" type="text" />
+        </div>
+        <button class="admin-save-btn" onclick="saveBasics()">Save Basics</button>
+      </div>
+
+      <!-- RESEARCH TAB -->
+      <div class="admin-section" id="tab-research">
+        <div class="admin-divider">Research Cards</div>
+        <div id="research-cards-editor"></div>
+        <button class="add-item-btn" onclick="addResearchCard()">+ Add research position</button>
+        <button class="admin-save-btn" style="margin-top:16px" onclick="saveResearch()">Save Research</button>
+      </div>
+
+      <!-- PUBS TAB -->
+      <div class="admin-section" id="tab-pubs">
+        <div class="admin-divider">Papers &amp; Manuscripts</div>
+        <div id="pubs-editor"></div>
+        <button class="add-item-btn" onclick="addPub()">+ Add paper / manuscript</button>
+        <button class="admin-save-btn" style="margin-top:16px" onclick="savePubs()">Save Publications</button>
+      </div>
+
+      <!-- SKILLS TAB -->
+      <div class="admin-section" id="tab-skills">
+        <div class="admin-divider">Skill Groups</div>
+        <div id="skills-editor"></div>
+        <button class="add-item-btn" onclick="addSkillGroup()">+ Add skill group</button>
+        <button class="admin-save-btn" style="margin-top:16px" onclick="saveSkills()">Save Skills</button>
+      </div>
+
+      <!-- STATS TAB -->
+      <div class="admin-section" id="tab-stats">
+        <div class="admin-divider">Stats Strip (numbers beneath hero)</div>
+        <div class="admin-field">
+          <label class="admin-label">Stat 1 — number</label>
+          <input class="admin-input" id="s1-num" type="text" />
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">Stat 1 — label</label>
+          <input class="admin-input" id="s1-label" type="text" />
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">Stat 2 — number</label>
+          <input class="admin-input" id="s2-num" type="text" />
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">Stat 2 — label</label>
+          <input class="admin-input" id="s2-label" type="text" />
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">Stat 3 — number</label>
+          <input class="admin-input" id="s3-num" type="text" />
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">Stat 3 — label</label>
+          <input class="admin-input" id="s3-label" type="text" />
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">Stat 4 — number</label>
+          <input class="admin-input" id="s4-num" type="text" />
+        </div>
+        <div class="admin-field">
+          <label class="admin-label">Stat 4 — label</label>
+          <input class="admin-input" id="s4-label" type="text" />
+        </div>
+        <button class="admin-save-btn" onclick="saveStats()">Save Stats</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ─────────────────────────────────────────────────────────
+   DEFAULT DATA
+───────────────────────────────────────────────────────── */
+const DEFAULT = {
+  basics: {
+    name: "Harshavardhan Gowda",
+    eyebrow: "Research Portfolio · Seeking PhD & Research Positions",
+    tagline: "Deep learning researcher at the intersection of computational biology, remote sensing, and medical imaging — building models that see what humans cannot.",
+    contactTitle: "Open to PhD &amp; Research Opportunities.",
+    contactSub: "Third-year undergrad at NIT Karnataka actively seeking PhD positions and research internships for 2026–27. Let's build something meaningful together.",
+    footerLeft: "© 2025 Harshavardhan Gowda",
+    footerRight: "NITK Surathkal · B.Tech Metallurgical &amp; Materials Engineering",
+    contactLinks: [
+      { label: "Email", icon: "✉️", href: "mailto:harshavardhangowda19@gmail.com" },
+      { label: "LinkedIn", icon: "💼", href: "https://linkedin.com/in/harshavardhan-gowda" },
+      { label: "GitHub", icon: "⌨️", href: "https://github.com/Harshavardhan-Gowda19" }
+    ]
+  },
+  research: [
+    {
+      institution: "A*STAR Bioinformatics Institute (BII)",
+      location: "Singapore",
+      role: "Research Intern — AMPM Group",
+      supervisor: "Dr. Chinh Tran-To Su",
+      period: "Mar 2026 – Jan 2027",
+      badge: "Ongoing",
+      highlights: [
+        "Engineered a dual-branch Siamese GCN architecture mapping antigen residue-graphs and antibody CDR sequences into a unified 128-dimensional metric space.",
+        "Implemented Multi-class InfoNCE and Cosine contrastive loss to maximise structural distance between non-binding decoys and wild-type binders.",
+        "Developed an end-to-end geometric data pipeline integrating 3D Euclidean distances, structural topology, and ESM-like sequence embeddings."
+      ],
+      tags: ["Graph Neural Networks", "Contrastive Learning", "Drug Design", "Bioinformatics"]
+    },
+    {
+      institution: "ISRO – ADRIN",
+      location: "Hyderabad, India",
+      role: "Research Intern",
+      supervisor: "Dr. Rajesh Reddy",
+      period: "Jun 2025 – Apr 2026",
+      badge: "NeurIPS 2026",
+      highlights: [
+        "Proposed HoBiDiff, addressing multiplicative speckle, single-pass geometric occlusion, and absent decoder-side structural conditioning in SAR-to-optical diffusion.",
+        "Designed the Homomorphic Speckle Suppressor (HSS) — a log-domain learnable operator with zero-initialised projection proved to guarantee identity at init (Lemma 3.1).",
+        "State-of-the-art on MSAW 0.5m VHR: LPIPS 0.289 (36.9% over CBBDM), FSIMc +8.7%, SAM −16.0%."
+      ],
+      tags: ["Diffusion Models", "SAR Imaging", "Remote Sensing", "Score-based Models"]
+    },
+    {
+      institution: "IIT Hyderabad",
+      location: "Medical Optics & Sensors Lab",
+      role: "Research Intern",
+      supervisor: "Prof. Renu John",
+      period: "May 2025 – Present",
+      badge: "Ongoing",
+      highlights: [
+        "Engineered an Attention-Guided CycleGAN for virtual H&E staining of label-free cervical cancer cells, cutting staining time by ~85%.",
+        "Designed a resolution-preserving DenseNet backbone with Multi-Scale Trident Context Aggregator and CCSA model for long-range dependency capture.",
+        "Trained on unpaired dataset (2,500 unstained + 2,400 H&E patches); outperformed all ablated variants."
+      ],
+      tags: ["CycleGAN", "Medical Imaging", "Attention Mechanisms", "Cancer Diagnostics"]
+    },
+    {
+      institution: "KMC Hospital",
+      location: "Manipal, India",
+      role: "Research Collaborator",
+      supervisor: "Dr. Amir Hussain Fathi",
+      period: "Dec 2025 – Present",
+      badge: "Ongoing",
+      highlights: [
+        "Contributed mathematical and statistical modelling components to a dynamical systems model of metabolic regulation in cortical circuits."
+      ],
+      tags: ["Dynamical Systems", "Neuroscience", "Mathematical Modelling"]
+    }
+  ],
+  pubs: [
+    {
+      title: "HoBiDiff: Homomorphic Bidirectional Diffusion for SAR-to-Optical Image Synthesis",
+      authors: "Harshavardhan Gowda, Rajesh Reddy",
+      venue: "Advances in Neural Information Processing Systems (NeurIPS), 2026",
+      status: "Under Review",
+      statusClass: ""
+    },
+    {
+      title: "Attention-Guided CycleGAN for Virtual H&E Staining of Label-Free Cervical Cancer Cells",
+      authors: "Harshavardhan Gowda, Renu John, Sarfaraj",
+      venue: "Journal of Biomedical Optics (Target)",
+      status: "In Preparation",
+      statusClass: "prep"
+    },
+    {
+      title: "Dynamical Systems Modeling of Metabolic Regulation in Cortical Circuits",
+      authors: "Harshavardhan Gowda, Amir Hussain Fathi",
+      venue: "Target journal TBD",
+      status: "In Preparation",
+      statusClass: "prep"
+    }
+  ],
+  skills: [
+    {
+      group: "Languages",
+      pills: ["Python", "R (Learning)"]
+    },
+    {
+      group: "Core Methods",
+      pills: ["Geometric Deep Learning", "GNNs", "Contrastive Learning", "Diffusion Models", "Score-based Models", "CycleGANs", "Structure-based Drug Design", "Sequence-to-Structure Mapping"]
+    },
+    {
+      group: "Frameworks & Tools",
+      pills: ["PyTorch", "TensorFlow", "PyTorch Geometric", "Biopython", "Hugging Face Transformers", "FastAPI", "GPU Handling", "PLM Models"]
+    },
+    {
+      group: "Mathematics",
+      pills: ["Linear Algebra", "Probability Theory", "Stochastic Processes", "Mathematical Statistics", "Differential Calculus", "Optimization Theory"]
+    }
+  ],
+  stats: {
+    s1: { num: "3", label: "Papers & Manuscripts" },
+    s2: { num: "4", label: "Research Internships" },
+    s3: { num: "3", label: "Elite Institutions" },
+    s4: { num: "3", label: "Research Domains" }
+  }
+};
+
+/* ─────────────────────────────────────────────────────────
+   STATE — load from localStorage or fallback to defaults
+───────────────────────────────────────────────────────── */
+function loadState() {
+  try {
+    const saved = localStorage.getItem('hg-portfolio-v2');
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(DEFAULT));
+}
+function saveState(state) {
+  localStorage.setItem('hg-portfolio-v2', JSON.stringify(state));
+}
+let STATE = loadState();
+
+/* ─────────────────────────────────────────────────────────
+   RENDER FUNCTIONS
+───────────────────────────────────────────────────────── */
+function renderAll() {
+  renderHero();
+  renderStats();
+  renderResearch();
+  renderPublications();
+  renderSkills();
+  renderContact();
+  renderFooter();
+}
+
+function renderHero() {
+  const b = STATE.basics;
+  document.getElementById('nav-name').textContent = b.name;
+  document.getElementById('hero-eyebrow').textContent = b.eyebrow;
+  // Name: split at last word for accent
+  const parts = b.name.trim().split(' ');
+  const first = parts.slice(0, -1).join(' ');
+  const last = parts[parts.length - 1];
+  document.getElementById('hero-name').innerHTML = first + '<span>' + escHtml(last) + '</span>';
+  document.getElementById('hero-tagline').textContent = b.tagline;
+}
+
+function renderStats() {
+  const s = STATE.stats;
+  document.getElementById('stat-papers').textContent = s.s1.num;
+  document.getElementById('stat-papers-label').textContent = s.s1.label;
+  document.getElementById('stat-internships').textContent = s.s2.num;
+  document.getElementById('stat-internships-label').textContent = s.s2.label;
+  document.getElementById('stat-institutions').textContent = s.s3.num;
+  document.getElementById('stat-institutions-label').textContent = s.s3.label;
+  document.getElementById('stat-domains').textContent = s.s4.num;
+  document.getElementById('stat-domains-label').textContent = s.s4.label;
+}
+
+function renderResearch() {
+  const grid = document.getElementById('research-grid');
+  grid.innerHTML = STATE.research.map((r, i) => `
+    <div class="research-card reveal reveal-d${(i%3)+1}">
+      <div class="card-institution">${escHtml(r.institution)} · ${escHtml(r.location)}</div>
+      <div class="card-header">
+        <div>
+          <div class="card-role">${escHtml(r.role)}</div>
+          <div class="card-period">${escHtml(r.supervisor)} · ${escHtml(r.period)}</div>
+        </div>
+        ${r.badge ? `<div class="card-badge">${escHtml(r.badge)}</div>` : ''}
+      </div>
+      <ul class="card-highlights">
+        ${r.highlights.map(h => `<li>${escHtml(h)}</li>`).join('')}
+      </ul>
+      <div class="card-tags">
+        ${r.tags.map(t => `<span class="tag">${escHtml(t)}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+  observeReveal();
+}
+
+function renderPublications() {
+  const list = document.getElementById('pub-list');
+  list.innerHTML = STATE.pubs.map((p, i) => `
+    <div class="pub-item reveal reveal-d${(i%3)+1}">
+      <div>
+        <div class="pub-title">${escHtml(p.title)}</div>
+        <div class="pub-authors">${escHtml(p.authors)}</div>
+        <div class="pub-venue">${escHtml(p.venue)}</div>
+      </div>
+      <div class="pub-status ${p.statusClass || ''}">${escHtml(p.status)}</div>
+    </div>
+  `).join('');
+  observeReveal();
+}
+
+function renderSkills() {
+  const grid = document.getElementById('skills-grid');
+  grid.innerHTML = STATE.skills.map((s, i) => `
+    <div class="skill-group reveal reveal-d${(i%3)+1}">
+      <div class="skill-group-title">${escHtml(s.group)}</div>
+      <div class="skill-pills">
+        ${s.pills.map(p => `<span class="skill-pill">${escHtml(p)}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+  observeReveal();
+}
+
+function renderContact() {
+  const b = STATE.basics;
+  document.getElementById('contact-title').innerHTML = b.contactTitle;
+  document.getElementById('contact-sub').textContent = b.contactSub;
+  const cLinks = document.getElementById('contact-links-container');
+  cLinks.innerHTML = b.contactLinks.map(l => `
+    <a class="contact-link" href="${escHtml(l.href)}">
+      <span class="icon">${l.icon}</span>
+      ${escHtml(l.label)}
+    </a>
+  `).join('');
+}
+
+function renderFooter() {
+  document.getElementById('footer-left').innerHTML = STATE.basics.footerLeft;
+  document.getElementById('footer-right').innerHTML = STATE.basics.footerRight;
+}
+
+/* ─────────────────────────────────────────────────────────
+   ADMIN PANEL
+───────────────────────────────────────────────────────── */
+function openAdmin() {
+  populateAdminForms();
+  document.getElementById('admin-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeAdmin() {
+  document.getElementById('admin-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function overlayClickClose(e) {
+  if (e.target === document.getElementById('admin-overlay')) closeAdmin();
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+/* ── Populate admin forms from STATE ── */
+function populateAdminForms() {
+  const b = STATE.basics;
+  document.getElementById('edit-name').value = b.name;
+  document.getElementById('edit-eyebrow').value = b.eyebrow;
+  document.getElementById('edit-tagline').value = b.tagline;
+  document.getElementById('edit-contact-title').value = b.contactTitle.replace(/&amp;/g,'&');
+  document.getElementById('edit-contact-sub').value = b.contactSub;
+  document.getElementById('edit-footer-left').value = b.footerLeft.replace(/&amp;/g,'&');
+  document.getElementById('edit-footer-right').value = b.footerRight.replace(/&amp;/g,'&');
+
+  // Contact links
+  renderContactLinksEditor();
+  // Research cards
+  renderResearchEditor();
+  // Publications
+  renderPubsEditor();
+  // Skills
+  renderSkillsEditor();
+  // Stats
+  const s = STATE.stats;
+  document.getElementById('s1-num').value = s.s1.num;
+  document.getElementById('s1-label').value = s.s1.label;
+  document.getElementById('s2-num').value = s.s2.num;
+  document.getElementById('s2-label').value = s.s2.label;
+  document.getElementById('s3-num').value = s.s3.num;
+  document.getElementById('s3-label').value = s.s3.label;
+  document.getElementById('s4-num').value = s.s4.num;
+  document.getElementById('s4-label').value = s.s4.label;
+}
+
+function renderContactLinksEditor() {
+  const el = document.getElementById('contact-links-editor');
+  el.innerHTML = STATE.basics.contactLinks.map((l, i) => `
+    <div class="card-editor" id="clink-${i}">
+      <div class="card-editor-header">
+        <span class="card-editor-title">${l.icon} ${l.label}</span>
+        <button class="delete-btn" onclick="deleteContactLink(${i})">Remove</button>
+      </div>
+      <div class="admin-field"><label class="admin-label">Label</label><input class="admin-input" id="clink-label-${i}" value="${escAttr(l.label)}" /></div>
+      <div class="admin-field"><label class="admin-label">Icon (emoji)</label><input class="admin-input" id="clink-icon-${i}" value="${escAttr(l.icon)}" style="max-width:80px" /></div>
+      <div class="admin-field"><label class="admin-label">URL / href</label><input class="admin-input" id="clink-href-${i}" value="${escAttr(l.href)}" /></div>
+    </div>
+  `).join('');
+}
+
+function addContactLink() {
+  STATE.basics.contactLinks.push({ label: "New Link", icon: "🔗", href: "#" });
+  renderContactLinksEditor();
+}
+function deleteContactLink(i) {
+  STATE.basics.contactLinks.splice(i, 1);
+  renderContactLinksEditor();
+}
+
+function renderResearchEditor() {
+  const el = document.getElementById('research-cards-editor');
+  el.innerHTML = STATE.research.map((r, i) => `
+    <div class="card-editor">
+      <div class="card-editor-header">
+        <span class="card-editor-title">${escHtml(r.institution)}</span>
+        <div style="display:flex;gap:8px">
+          <button class="card-editor-toggle" onclick="toggleCardEditor(this)">▾ Edit</button>
+          <button class="delete-btn" onclick="deleteResearch(${i})">Remove</button>
+        </div>
+      </div>
+      <div class="card-editor-body">
+        <div class="admin-field"><label class="admin-label">Institution</label><input class="admin-input" id="r-${i}-institution" value="${escAttr(r.institution)}" /></div>
+        <div class="admin-field"><label class="admin-label">Location</label><input class="admin-input" id="r-${i}-location" value="${escAttr(r.location)}" /></div>
+        <div class="admin-field"><label class="admin-label">Role / Title</label><input class="admin-input" id="r-${i}-role" value="${escAttr(r.role)}" /></div>
+        <div class="admin-field"><label class="admin-label">Supervisor</label><input class="admin-input" id="r-${i}-supervisor" value="${escAttr(r.supervisor)}" /></div>
+        <div class="admin-field"><label class="admin-label">Period</label><input class="admin-input" id="r-${i}-period" value="${escAttr(r.period)}" /></div>
+        <div class="admin-field"><label class="admin-label">Badge (e.g. NeurIPS 2026, Ongoing)</label><input class="admin-input" id="r-${i}-badge" value="${escAttr(r.badge||'')}" /></div>
+        <div class="admin-field">
+          <div class="hlabel"><span>Bullet Points</span></div>
+          <div id="r-${i}-bullets">${r.highlights.map((h,j) => `
+            <div class="bullet-row">
+              <input class="admin-input" id="r-${i}-h-${j}" value="${escAttr(h)}" />
+              <button class="bullet-remove" onclick="removeBullet('r-${i}-bullets',${i},'highlights',${j})">−</button>
+            </div>`).join('')}
+          </div>
+          <button class="add-item-btn" style="margin-top:8px" onclick="addBullet('r-${i}-bullets',${i},'highlights')">+ Add bullet</button>
+        </div>
+        <div class="admin-field"><label class="admin-label">Tags (comma-separated)</label><input class="admin-input" id="r-${i}-tags" value="${escAttr((r.tags||[]).join(', '))}" /></div>
+      </div>
+    </div>
+  `).join('');
+}
+function deleteResearch(i) {
+  STATE.research.splice(i, 1);
+  renderResearchEditor();
+}
+function addResearchCard() {
+  STATE.research.push({
+    institution: "New Institution",
+    location: "City, Country",
+    role: "Research Intern",
+    supervisor: "Prof. Name",
+    period: "Month Year – Month Year",
+    badge: "Ongoing",
+    highlights: ["Key contribution here."],
+    tags: ["Tag1", "Tag2"]
+  });
+  renderResearchEditor();
+}
+
+function renderPubsEditor() {
+  const el = document.getElementById('pubs-editor');
+  el.innerHTML = STATE.pubs.map((p, i) => `
+    <div class="card-editor">
+      <div class="card-editor-header">
+        <span class="card-editor-title" style="font-size:12px;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(p.title)}</span>
+        <div style="display:flex;gap:8px">
+          <button class="card-editor-toggle" onclick="toggleCardEditor(this)">▾ Edit</button>
+          <button class="delete-btn" onclick="deletePub(${i})">Remove</button>
+        </div>
+      </div>
+      <div class="card-editor-body">
+        <div class="admin-field"><label class="admin-label">Paper Title</label><textarea class="admin-textarea" id="p-${i}-title" rows="2">${escHtml(p.title)}</textarea></div>
+        <div class="admin-field"><label class="admin-label">Authors</label><input class="admin-input" id="p-${i}-authors" value="${escAttr(p.authors)}" /></div>
+        <div class="admin-field"><label class="admin-label">Venue / Journal</label><input class="admin-input" id="p-${i}-venue" value="${escAttr(p.venue)}" /></div>
+        <div class="admin-field"><label class="admin-label">Status</label>
+          <select class="admin-select" id="p-${i}-status">
+            <option value="Under Review" ${p.status==='Under Review'?'selected':''}>Under Review</option>
+            <option value="Accepted" ${p.status==='Accepted'?'selected':''}>Accepted</option>
+            <option value="Published" ${p.status==='Published'?'selected':''}>Published</option>
+            <option value="In Preparation" ${p.status==='In Preparation'?'selected':''}>In Preparation</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+function deletePub(i) { STATE.pubs.splice(i,1); renderPubsEditor(); }
+function addPub() {
+  STATE.pubs.push({ title: "New Paper Title", authors: "Author 1, Author 2", venue: "Target Venue", status: "In Preparation", statusClass: "prep" });
+  renderPubsEditor();
+}
+
+function renderSkillsEditor() {
+  const el = document.getElementById('skills-editor');
+  el.innerHTML = STATE.skills.map((s, i) => `
+    <div class="card-editor">
+      <div class="card-editor-header">
+        <span class="card-editor-title">${escHtml(s.group)}</span>
+        <div style="display:flex;gap:8px">
+          <button class="card-editor-toggle" onclick="toggleCardEditor(this)">▾ Edit</button>
+          <button class="delete-btn" onclick="deleteSkillGroup(${i})">Remove</button>
+        </div>
+      </div>
+      <div class="card-editor-body">
+        <div class="admin-field"><label class="admin-label">Group Name</label><input class="admin-input" id="sk-${i}-group" value="${escAttr(s.group)}" /></div>
+        <div class="admin-field"><label class="admin-label">Skills (comma-separated)</label><textarea class="admin-textarea" id="sk-${i}-pills" rows="3">${escHtml(s.pills.join(', '))}</textarea></div>
+      </div>
+    </div>
+  `).join('');
+}
+function deleteSkillGroup(i) { STATE.skills.splice(i,1); renderSkillsEditor(); }
+function addSkillGroup() {
+  STATE.skills.push({ group: "New Group", pills: ["Skill 1", "Skill 2"] });
+  renderSkillsEditor();
+}
+
+/* ─── BULLET HELPERS ────────── */
+function addBullet(containerId, cardIndex, field) {
+  STATE.research[cardIndex][field].push('New point here.');
+  renderResearchEditor();
+  // Re-open the toggled editor
+  const container = document.getElementById(containerId);
+  if (container) {
+    const body = container.closest('.card-editor-body');
+    if (body) body.classList.add('open');
+  }
+}
+function removeBullet(containerId, cardIndex, field, bulletIndex) {
+  STATE.research[cardIndex][field].splice(bulletIndex, 1);
+  renderResearchEditor();
+}
+
+function toggleCardEditor(btn) {
+  const body = btn.closest('.card-editor').querySelector('.card-editor-body');
+  body.classList.toggle('open');
+  btn.textContent = body.classList.contains('open') ? '▴ Close' : '▾ Edit';
+}
+
+/* ─── SAVE FUNCTIONS ──────────── */
+function saveBasics() {
+  // Read contact links from editor fields
+  const links = STATE.basics.contactLinks.map((_, i) => ({
+    label: document.getElementById(`clink-label-${i}`)?.value || '',
+    icon: document.getElementById(`clink-icon-${i}`)?.value || '🔗',
+    href: document.getElementById(`clink-href-${i}`)?.value || '#'
+  }));
+  STATE.basics = {
+    ...STATE.basics,
+    name: document.getElementById('edit-name').value,
+    eyebrow: document.getElementById('edit-eyebrow').value,
+    tagline: document.getElementById('edit-tagline').value,
+    contactTitle: document.getElementById('edit-contact-title').value.replace(/&/g,'&amp;'),
+    contactSub: document.getElementById('edit-contact-sub').value,
+    footerLeft: document.getElementById('edit-footer-left').value.replace(/&/g,'&amp;'),
+    footerRight: document.getElementById('edit-footer-right').value.replace(/&/g,'&amp;'),
+    contactLinks: links
+  };
+  saveState(STATE);
+  renderAll();
+  toast('Basics saved ✓');
+}
+
+function saveResearch() {
+  STATE.research = STATE.research.map((r, i) => {
+    // Collect bullets
+    const highlights = r.highlights.map((_, j) => {
+      const el = document.getElementById(`r-${i}-h-${j}`);
+      return el ? el.value : '';
+    }).filter(Boolean);
+    return {
+      institution: document.getElementById(`r-${i}-institution`)?.value || r.institution,
+      location: document.getElementById(`r-${i}-location`)?.value || r.location,
+      role: document.getElementById(`r-${i}-role`)?.value || r.role,
+      supervisor: document.getElementById(`r-${i}-supervisor`)?.value || r.supervisor,
+      period: document.getElementById(`r-${i}-period`)?.value || r.period,
+      badge: document.getElementById(`r-${i}-badge`)?.value || '',
+      highlights,
+      tags: (document.getElementById(`r-${i}-tags`)?.value || '').split(',').map(t => t.trim()).filter(Boolean)
+    };
+  });
+  saveState(STATE);
+  renderResearch();
+  toast('Research saved ✓');
+}
+
+function savePubs() {
+  STATE.pubs = STATE.pubs.map((p, i) => {
+    const status = document.getElementById(`p-${i}-status`)?.value || p.status;
+    return {
+      title: document.getElementById(`p-${i}-title`)?.value || p.title,
+      authors: document.getElementById(`p-${i}-authors`)?.value || p.authors,
+      venue: document.getElementById(`p-${i}-venue`)?.value || p.venue,
+      status,
+      statusClass: (status === 'In Preparation') ? 'prep' : ''
+    };
+  });
+  saveState(STATE);
+  renderPublications();
+  toast('Publications saved ✓');
+}
+
+function saveSkills() {
+  STATE.skills = STATE.skills.map((s, i) => ({
+    group: document.getElementById(`sk-${i}-group`)?.value || s.group,
+    pills: (document.getElementById(`sk-${i}-pills`)?.value || '').split(',').map(p => p.trim()).filter(Boolean)
+  }));
+  saveState(STATE);
+  renderSkills();
+  toast('Skills saved ✓');
+}
+
+function saveStats() {
+  STATE.stats = {
+    s1: { num: document.getElementById('s1-num').value, label: document.getElementById('s1-label').value },
+    s2: { num: document.getElementById('s2-num').value, label: document.getElementById('s2-label').value },
+    s3: { num: document.getElementById('s3-num').value, label: document.getElementById('s3-label').value },
+    s4: { num: document.getElementById('s4-num').value, label: document.getElementById('s4-label').value }
+  };
+  saveState(STATE);
+  renderStats();
+  toast('Stats saved ✓');
+}
+
+/* ─── TOAST ─── */
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+/* ─── ESCAPE HELPERS ─── */
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(str) {
+  return String(str).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ─────────────────────────────────────────────────────────
+   SECRET ADMIN ENTRY
+   ─ Public sees: nothing. No button, no hint.
+   ─ Your secret: type  hg19  anywhere on the page (not in
+     a text field), then enter your password.
+   ─ Change ADMIN_PASSWORD below before pushing to GitHub.
+───────────────────────────────────────────────────────── */
+const ADMIN_PASSWORD = 'nitk2027'; // ← CHANGE THIS before deploying
+const SECRET_SEQUENCE = 'hg19';    // ← type this anywhere on the page
+let seqBuffer = '';
+let seqTimer = null;
+
+function checkPassword() {
+  const val = document.getElementById('pw-input').value;
+  if (val === ADMIN_PASSWORD) {
+    closePwGate();
+    openAdmin();
+  } else {
+    const err = document.getElementById('pw-error');
+    err.textContent = 'Incorrect password. Try again.';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+    setTimeout(() => err.textContent = '', 2500);
+  }
+}
+
+function openPwGate() {
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').textContent = '';
+  document.getElementById('pw-gate').classList.add('open');
+  setTimeout(() => document.getElementById('pw-input').focus(), 80);
+}
+function closePwGate() {
+  document.getElementById('pw-gate').classList.remove('open');
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCROLL REVEAL / INTERSECTION OBSERVER
+───────────────────────────────────────────────────────── */
+let revealObserver;
+function observeReveal() {
+  if (revealObserver) revealObserver.disconnect();
+  revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => {
+    if (!el.classList.contains('visible')) revealObserver.observe(el);
+  });
+}
+
+/* ─── HERO ENTRANCE ─── */
+function heroEntrance() {
+  ['hero-eyebrow','hero-name','hero-tagline'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.opacity = '1', el.style.transform = 'translateY(0)';
+  });
+  const cta = document.querySelector('.hero-cta-group');
+  if (cta) cta.style.opacity = '1', cta.style.transform = 'translateY(0)';
+}
+
+/* ─────────────────────────────────────────────────────────
+   INIT
+───────────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  renderAll();
+  setTimeout(heroEntrance, 80);
+  observeReveal();
+
+  // Secret sequence listener — public sees nothing
+  document.addEventListener('keydown', e => {
+    // Close admin/pw on Escape
+    if (e.key === 'Escape') { closeAdmin(); closePwGate(); return; }
+
+    // Don't capture when user is typing in a field
+    const tag = document.activeElement.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+    // Accumulate sequence
+    seqBuffer += e.key.toLowerCase();
+    if (seqBuffer.length > SECRET_SEQUENCE.length) {
+      seqBuffer = seqBuffer.slice(-SECRET_SEQUENCE.length);
+    }
+    clearTimeout(seqTimer);
+    seqTimer = setTimeout(() => seqBuffer = '', 2000);
+
+    if (seqBuffer === SECRET_SEQUENCE) {
+      seqBuffer = '';
+      openPwGate();
+    }
+  });
+
+  // Click away to close password gate
+  document.getElementById('pw-gate').addEventListener('click', function(e) {
+    if (e.target === this) closePwGate();
+  });
+});
+</script>
+</body>
+</html>
